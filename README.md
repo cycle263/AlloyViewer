@@ -20,6 +20,12 @@
 ## 示例
 您可以下载代码在examples文件夹中找到例子或者[在线示例](https://alloyteam.github.io/AlloyViewer/examples/)
 
+* 本地运行示例
+
+    - 切换到examples目录， 执行`npm i`
+    - 修改examples目录下的packages.json里的 start 命令中的ip，或者去掉此配置参数
+    - 同时执行start 和 dev 两个命令
+
 ## 使用方法
 
 ### 1、安装NPM依赖

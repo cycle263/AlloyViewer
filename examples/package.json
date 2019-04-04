@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --open --watch --host 30.20.78.104 --port 8099 --no-info",
+    "start": "webpack-dev-server --open --watch --host ip --port 8099 --no-info",
     "dev": "webpack --progress --colors --watch"
   },
   "author": "",
@@ -24,7 +24,6 @@
     "webpack-dev-server": "^1.16.2"
   },
   "dependencies": {
-    "antd-mobile": "^2.2.11",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-imageview": "^1.1.0",
