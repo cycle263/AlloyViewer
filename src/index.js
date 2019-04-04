@@ -83,7 +83,7 @@ class ImageView extends Component {
                     onSingleTap={closeBtn ? function () { } : this.onSingleTap.bind(this)}
                     onPressMove={this.onPressMove.bind(this)}
                     onSwipe={this.onSwipe.bind(this)}>
-                    <ul ref="imagelist" className="imagelist">
+                    <ul ref={ref => this.list = ref} className="imagelist">
                         {
                             this.props.imagelist.map((item, i) => {
                                 return (
@@ -105,7 +105,7 @@ class ImageView extends Component {
                     </ul>
                 </AlloyFinger>
                 {
-                    disablePageNum ? null : <div className="page" ref="page">{this.state.current + 1} / {this.arrLength}</div>
+                    disablePageNum ? null : <div className="page" ref={ref => this.page = ref}>{this.state.current + 1} / {this.arrLength}</div>
                 }
                 {
                     closeBtn ? <div onClick={this.onSingleTap.bind(this)} className="closeBtn">{closeIcon}</div> : null
@@ -120,14 +120,9 @@ class ImageView extends Component {
             { imagelist, initCallback } = this.props;
 
         this.arrLength = imagelist.length;
-        this.list = this.refs['imagelist'];
-
         Transform(this.list);
-
         current && this.changeIndex(current, false);
-
         this.bindStyle(current);
-
         initCallback && initCallback();
         window.addEventListener('orientationchange', this.onOrientationChange)
     }
@@ -307,7 +302,7 @@ class ImageView extends Component {
                 Transform(this.ob)
             }
 
-            const page = this.refs.page;
+            const page = this.page;
             if (page) {
                 page.classList.remove('hide');
             }
