@@ -99,7 +99,7 @@ export class CenterImage extends Component {
             imgStyle.height = height;
         }
 
-        target.setAttribute('style', `width:${imgStyle.width}; height:${imgStyle.height}; left:${imgStyle.left}; top:${imgStyle.top};`);
+        target.setAttribute('style', `width:100%; height:auto;top:${imgStyle.top};`);
         target.setAttribute('rate', 1/r);
     }
 }

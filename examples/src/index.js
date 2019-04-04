@@ -29,7 +29,7 @@ class ImageView extends Component {
         gap: MARGIN,
         current: 0,
         disablePageNum: false,
-        desc: '',
+        closeBtn: false,
         maxScale: 2
     }
 
@@ -74,12 +74,13 @@ class ImageView extends Component {
     focused = null;
 
     render() {
-        const { desc, disablePageNum, children, gap } = this.props;
+        const { closeBtn, disablePageNum, children, gap } = this.props;
+        const closeIcon = <svg class="icon" width="32px" height="32.00px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path fill="#ffffff" d="M810.666667 273.493333L750.506667 213.333333 512 451.84 273.493333 213.333333 213.333333 273.493333 451.84 512 213.333333 750.506667 273.493333 810.666667 512 572.16 750.506667 810.666667 810.666667 750.506667 572.16 512z" /></svg>;
 
         return (
             <div className="imageview">
                 <AlloyFinger
-                    onSingleTap={this.onSingleTap.bind(this)}
+                    onSingleTap={closeBtn ? function(){} : this.onSingleTap.bind(this)}
                     onPressMove={this.onPressMove.bind(this)}
                     onSwipe={this.onSwipe.bind(this)}>
                     <ul ref="imagelist" className="imagelist">
@@ -107,7 +108,7 @@ class ImageView extends Component {
                     disablePageNum ? null : <div className="page" ref="page">{ this.state.current + 1 } / { this.arrLength }</div>
                 }
                 {
-                    desc ? <div dangerouslySetInnerHTML={{__html: desc}}></div> : null
+                    closeBtn ? <div onClick={this.onSingleTap.bind(this)} className="closeBtn">{closeIcon}</div> : null
                 }
                 { children }
             </div>
@@ -152,7 +153,7 @@ class ImageView extends Component {
             }
         }
 
-        evt.preventDefault();
+        // evt.preventDefault();
     }
 
     onSwipe(evt){
@@ -223,9 +224,7 @@ class ImageView extends Component {
         if( !this.props.enableRotate || this.ob.getAttribute('rate') >= 3.5){
             return false;
         }
-        
         this.ob.style.webkitTransition = 'cubic-bezier(.25,.01,.25,1)'
-
         this.ob.rotateZ += evt.angle;
     }
 
@@ -307,13 +306,10 @@ class ImageView extends Component {
             if(this.ob && !this.ob.scaleX){ 
                 Transform(this.ob)
             }
-            // ease hide page number
+
             const page = this.refs.page;
             if(page){
                 page.classList.remove('hide');
-                setTimeout(()=>{
-                    page.classList.add('hide');
-                }, 2000);
             }
         })
     }

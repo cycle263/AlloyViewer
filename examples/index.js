@@ -4,12 +4,10 @@ import { SingleImgView } from './src/index.js'
 // import ImageView from 'react-imageview'
 
 // import 'react-imageview/dist/react-imageview.css'
-import Mlogger from '@tencent/mlogger'
 
 class Main extends Component {
     constructor(){
         super();
-        Mlogger.init({});
     }
 
     render() {
@@ -42,26 +40,10 @@ class Main extends Component {
         SingleImgView.show({
             imagelist,
             current,
-            maxScale: 3,
+            closeBtn: true,
+            maxScale: 2,
             close: ()=>{SingleImgView.hide()},
             initCallback: ()=>{
-                // 禁止右滑关闭webview
-                // if(mqq){
-                //     mqq.ui.setWebViewBehavior({
-                //         swipeBack: 0
-                //     });
-
-                //     // 禁用系统的长按功能(如果没有配置长按事件则启用系统长按事件)
-                //     if (mqq.compare('5.8') > -1) {
-                //         mqq.invoke('ui', 'disableLongPress', {
-                //             enable: true
-                //         });
-                //     } else if (mqq.compare('5.8') > -1) {
-                //         mqq.invoke('ui', 'disableLongPress', {
-                //             enable: false
-                //         });
-                //     }
-                // }
             }
         })
     }

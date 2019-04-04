@@ -29,7 +29,7 @@ class ImageView extends Component {
         gap: MARGIN,
         current: 0,
         disablePageNum: false,
-        desc: '',
+        closeBtn: false,
         maxScale: 2
     }
 
@@ -57,11 +57,11 @@ class ImageView extends Component {
         this.onOrientationChange = this.onOrientationChange.bind(this)
     }
 
-    onOrientationChange(){
+    onOrientationChange() {
         // 方向改变后新的innerHeight生效需要delay
-        setTimeout(()=>{
+        setTimeout(() => {
             this.screenWidth = window.innerWidth || window.screen.availWidth;
-            this.screenHeight = window.innerHeight ||  window.screen.availHeight;
+            this.screenHeight = window.innerHeight || window.screen.availHeight;
             this.changeIndex(this.state.current)
         }, 100)
     }
@@ -74,42 +74,43 @@ class ImageView extends Component {
     focused = null;
 
     render() {
-        const { desc, disablePageNum, children, gap } = this.props;
+        const { closeBtn, disablePageNum, children, gap } = this.props;
+        const closeIcon = <svg class="icon" width="32px" height="32.00px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path fill="#ffffff" d="M810.666667 273.493333L750.506667 213.333333 512 451.84 273.493333 213.333333 213.333333 273.493333 451.84 512 213.333333 750.506667 273.493333 810.666667 512 572.16 750.506667 810.666667 810.666667 750.506667 572.16 512z" /></svg>;
 
         return (
             <div className="imageview">
                 <AlloyFinger
-                    onSingleTap={this.onSingleTap.bind(this)}
+                    onSingleTap={closeBtn ? function () { } : this.onSingleTap.bind(this)}
                     onPressMove={this.onPressMove.bind(this)}
                     onSwipe={this.onSwipe.bind(this)}>
-                    <ul ref={imagelist => {this.list = imagelist;}} className="imagelist">
-                    {
-                        this.props.imagelist.map((item, i) => {
-                            return (
-                                <li className="imagelist-item" style={{ marginRight: gap + 'px'}} key={"img"+i}>
-                                    <AlloyFinger
-                                        onPressMove={this.onPicPressMove.bind(this)}
-                                        onMultipointStart={this.onMultipointStart.bind(this)}
-                                        onLongTap={this.onLongTap.bind(this)}
-                                        onPinch={this.onPinch.bind(this)}
-                                        onRotate={this.onRotate.bind(this)}
-                                        onMultipointEnd={this.onMultipointEnd.bind(this)}
-                                        onDoubleTap={this.onDoubleTap.bind(this)}>
-                                        <CenterImage id={`view${i}`} className="imagelist-item-img" lazysrc={item} index={i} current={this.state.current}/>
-                                    </AlloyFinger>
-                                </li>
-                            )
-                        })
-                    }
+                    <ul ref="imagelist" className="imagelist">
+                        {
+                            this.props.imagelist.map((item, i) => {
+                                return (
+                                    <li className="imagelist-item" style={{ marginRight: gap + 'px' }} key={"img" + i}>
+                                        <AlloyFinger
+                                            onPressMove={this.onPicPressMove.bind(this)}
+                                            onMultipointStart={this.onMultipointStart.bind(this)}
+                                            onLongTap={this.onLongTap.bind(this)}
+                                            onPinch={this.onPinch.bind(this)}
+                                            onRotate={this.onRotate.bind(this)}
+                                            onMultipointEnd={this.onMultipointEnd.bind(this)}
+                                            onDoubleTap={this.onDoubleTap.bind(this)}>
+                                            <CenterImage id={`view${i}`} className="imagelist-item-img" lazysrc={item} index={i} current={this.state.current} />
+                                        </AlloyFinger>
+                                    </li>
+                                )
+                            })
+                        }
                     </ul>
                 </AlloyFinger>
                 {
-                    disablePageNum ? null : <div className="page" ref="page">{ this.state.current + 1 } / { this.arrLength }</div>
+                    disablePageNum ? null : <div className="page" ref="page">{this.state.current + 1} / {this.arrLength}</div>
                 }
                 {
-                    desc ? <div dangerouslySetInnerHTML={{__html: desc}}></div> : null
+                    closeBtn ? <div onClick={this.onSingleTap.bind(this)} className="closeBtn">{closeIcon}</div> : null
                 }
-                { children }
+                {children}
             </div>
         )
     }
@@ -119,6 +120,7 @@ class ImageView extends Component {
             { imagelist, initCallback } = this.props;
 
         this.arrLength = imagelist.length;
+        this.list = this.refs['imagelist'];
 
         Transform(this.list);
 
@@ -130,40 +132,40 @@ class ImageView extends Component {
         window.addEventListener('orientationchange', this.onOrientationChange)
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         window.removeEventListener('orientationchange', this.onOrientationChange)
     }
 
-    onSingleTap(){
+    onSingleTap() {
         this.props.close && this.props.close();
     }
 
-    onPressMove(evt){
+    onPressMove(evt) {
         const { current } = this.state;
 
         this.endAnimation();
 
-        if( !this.focused ){
-            if((current === 0 && evt.deltaX > 0) || (current === this.arrLength - 1 && evt.deltaX < 0)){
+        if (!this.focused) {
+            if ((current === 0 && evt.deltaX > 0) || (current === this.arrLength - 1 && evt.deltaX < 0)) {
                 this.list.translateX += evt.deltaX / 3;
-            }else{
+            } else {
                 this.list.translateX += evt.deltaX;
             }
         }
 
-        evt.preventDefault();
+        // evt.preventDefault();
     }
 
-    onSwipe(evt){
+    onSwipe(evt) {
         const { direction } = evt;
 
         let { current } = this.state;
-        if( this.focused ){
+        if (this.focused) {
             return false;
         }
-        switch(direction) {
+        switch (direction) {
             case 'Left':
-                current < this.arrLength-1 && ++current && this.bindStyle(current);
+                current < this.arrLength - 1 && ++current && this.bindStyle(current);
                 break;
             case 'Right':
                 current > 0 && current-- && this.bindStyle(current);
@@ -177,38 +179,38 @@ class ImageView extends Component {
             isLongPic = this.ob.getAttribute('long'),
             { scaleX, width } = this.ob;
 
-        if(this.ob.scaleX <= 1 || evt.touches.length > 1){
+        if (this.ob.scaleX <= 1 || evt.touches.length > 1) {
             return;
         }
 
-        if(this.ob && this.checkBoundary(deltaX, deltaY)){
+        if (this.ob && this.checkBoundary(deltaX, deltaY)) {
             !isLongPic && (this.ob.translateX += deltaX);
             this.ob.translateY += deltaY;
-            
-            if(isLongPic && scaleX * width === this.screenWidth){
+
+            if (isLongPic && scaleX * width === this.screenWidth) {
                 this.focused = false;
-            }else{
-                this.focused = true;    
+            } else {
+                this.focused = true;
             }
-        }else {
+        } else {
             this.focused = false;
         }
         // console.log('translate ',this.ob.translateX, this.ob.translateY);
     }
 
-    onMultipointStart(){
+    onMultipointStart() {
         this.initScale = this.ob.scaleX;
     }
 
-    onPinch(evt){
-        if( this.props.disablePinch || this.ob.getAttribute('long')){
+    onPinch(evt) {
+        if (this.props.disablePinch || this.ob.getAttribute('long')) {
             return false;
         }
         this.ob.style.webkitTransition = 'cubic-bezier(.25,.01,.25,1)'
 
-        const { originX, originY } = this.ob, 
-            originX2 = evt.center.x - this.screenWidth/2 - document.body.scrollLeft,
-            originY2 = evt.center.y - this.screenHeight/2 - document.body.scrollTop;
+        const { originX, originY } = this.ob,
+            originX2 = evt.center.x - this.screenWidth / 2 - document.body.scrollLeft,
+            originY2 = evt.center.y - this.screenHeight / 2 - document.body.scrollTop;
 
         this.ob.originX = originX2;
         this.ob.originY = originY2;
@@ -218,25 +220,23 @@ class ImageView extends Component {
         this.ob.scaleX = this.ob.scaleY = this.initScale * evt.scale;
     }
 
-    onRotate(evt){
-        if( !this.props.enableRotate || this.ob.getAttribute('rate') >= 3.5){
+    onRotate(evt) {
+        if (!this.props.enableRotate || this.ob.getAttribute('rate') >= 3.5) {
             return false;
         }
-        
         this.ob.style.webkitTransition = 'cubic-bezier(.25,.01,.25,1)'
-
         this.ob.rotateZ += evt.angle;
     }
 
-    onLongTap(){
+    onLongTap() {
         this.props.longTap && this.props.longTap();
     }
 
-    onMultipointEnd(evt){
+    onMultipointEnd(evt) {
         // translate to normal
         this.changeIndex(this.state.current);
 
-        if(!this.ob){
+        if (!this.ob) {
             return;
         }
 
@@ -248,7 +248,7 @@ class ImageView extends Component {
         if (this.ob.scaleX < 1) {
             this.restore(false);
         }
-        if (this.ob.scaleX > maxScale && !isLongPic){
+        if (this.ob.scaleX > maxScale && !isLongPic) {
             this.setScale(maxScale);
         }
 
@@ -256,7 +256,7 @@ class ImageView extends Component {
         let rotation = this.ob.rotateZ % 360,
             rate = this.ob.getAttribute('rate');
 
-        if(rotation < 0){
+        if (rotation < 0) {
             rotation = 360 + rotation;
         }
         this.ob.rotateZ = rotation;
@@ -276,26 +276,26 @@ class ImageView extends Component {
         }
     }
 
-    onDoubleTap(evt){
-        if( this.props.disableDoubleTap ){
+    onDoubleTap(evt) {
+        if (this.props.disableDoubleTap) {
             return false;
         }
 
         const { origin } = evt,
-            originX = origin[0] - this.screenWidth/2 - document.body.scrollLeft,
-            originY = origin[1] - this.screenHeight/2 - document.body.scrollTop,
+            originX = origin[0] - this.screenWidth / 2 - document.body.scrollLeft,
+            originY = origin[1] - this.screenHeight / 2 - document.body.scrollTop,
             isLongPic = this.ob.getAttribute('long');
 
-        if(this.ob.scaleX === 1){
+        if (this.ob.scaleX === 1) {
             !isLongPic && (this.ob.translateX = this.ob.originX = originX);
             !isLongPic && (this.ob.translateY = this.ob.originY = originY);
             this.setScale(isLongPic ? this.screenWidth / this.ob.width : this.props.maxScale);
-        }else{
+        } else {
             this.ob.translateX = this.ob.originX;
             this.ob.translateY = this.ob.originY;
             this.setScale(1);
-        }   
-    
+        }
+
         // console.log('origin',this.ob.originX, this.ob.originY);
     }
 
@@ -303,23 +303,20 @@ class ImageView extends Component {
         this.setState({ current }, () => {
             this.ob && this.restore();
             this.ob = document.getElementById(`view${current}`);
-            if(this.ob && !this.ob.scaleX){ 
+            if (this.ob && !this.ob.scaleX) {
                 Transform(this.ob)
             }
-            // ease hide page number
+
             const page = this.refs.page;
-            if(page){
+            if (page) {
                 page.classList.remove('hide');
-                setTimeout(()=>{
-                    page.classList.add('hide');
-                }, 2000);
             }
         })
     }
 
-    changeIndex(current, ease=true) {
+    changeIndex(current, ease = true) {
         ease && (this.list.style.webkitTransition = '300ms ease');
-        this.list.translateX = -current*(this.screenWidth + this.props.gap);
+        this.list.translateX = -current * (this.screenWidth + this.props.gap);
 
         this.props.changeIndex && this.props.changeIndex(current);
     }
@@ -329,7 +326,7 @@ class ImageView extends Component {
         this.ob.scaleX = this.ob.scaleY = size;
     }
 
-    restore(rotate=true) {
+    restore(rotate = true) {
         this.ob.translateX = this.ob.translateY = 0;
         !!rotate && (this.ob.rotateZ = 0);
         this.ob.scaleX = this.ob.scaleY = 1;
@@ -346,7 +343,7 @@ class ImageView extends Component {
         const { scaleX, translateX, translateY, originX, originY, width, height } = this.ob,
             rate = this.ob.getAttribute('rate');
 
-        if(scaleX !== 1 || scaleX !== rate){
+        if (scaleX !== 1 || scaleX !== rate) {
             // include long picture
             const rangeLeft = (scaleX - 1) * (width / 2 + originX) + originX,
                 rangeRight = -(scaleX - 1) * (width / 2 - originX) + originX,
@@ -355,10 +352,10 @@ class ImageView extends Component {
 
             // console.log(rangeLeft, rangeRight, rangeUp, rangeDown);
 
-            if(translateX + deltaX <= rangeLeft
+            if (translateX + deltaX <= rangeLeft
                 && translateX + deltaX >= rangeRight
                 && translateY + deltaY <= rangeUp
-                && translateY + deltaY >= rangeDown ) {
+                && translateY + deltaY >= rangeDown) {
                 return true;
             }
         }
