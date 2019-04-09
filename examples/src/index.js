@@ -84,7 +84,7 @@ class ImageView extends Component {
                     onPressMove={this.onPressMove.bind(this)}
                     onSwipe={this.onSwipe.bind(this)}>
                     <ul ref={ref => this.list = ref} className="imagelist">
-                            
+                    {
                         this.props.imagelist.map((item, i) => {
                             return (
                                 <li className="imagelist-item" style={{ marginRight: gap + 'px'}} key={"img"+i}>
