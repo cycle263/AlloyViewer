@@ -148,7 +148,7 @@ class ImageView extends Component {
             }
         }
 
-        // evt.preventDefault();
+        evt.preventDefault();
     }
 
     onSwipe(evt){
