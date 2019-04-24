@@ -173,7 +173,6 @@ class ImageView extends Component {
         const { deltaX, deltaY } = evt,
             isLongPic = this.ob.getAttribute('long'),
             { scaleX, width } = this.ob;
-
         if(this.ob.scaleX <= 1 || evt.touches.length > 1){
             return;
         }

@@ -10,6 +10,16 @@ class Main extends Component {
         super();
     }
 
+    componentDidMount() {
+        const imgs = document.querySelector('.gallery').querySelectorAll('img');
+        const imgUrls = Array.from(imgs).map(item => item.getAttribute('src'));
+        imgs.forEach((item, i) => {
+            item.addEventListener('click', () => {
+                this.show(imgUrls, i);
+            });
+        });
+    }
+
     render() {
         let imagelist = [
             'https://p.qpic.cn/qqconadmin/0/e4a67754b2d1485aa186a4d38dbf07e1/0',
@@ -29,7 +39,7 @@ class Main extends Component {
                 <h3 className="title">Click image to open the viewer.</h3>
                 <ul className="gallery">
                 { imagelist.map((item, i)=>{
-                    return (<li key={i}><img className="pic" src={item} onClick={this.show.bind(this, imagelist, i)}/></li>)
+                    return (<li key={i}><img className="pic" src={item} /></li>)
                 })}
                 </ul>  
             </div>

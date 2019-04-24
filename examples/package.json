@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --open --watch --host ip --port 8099 --no-info",
+    "start": "webpack-dev-server --open --host 192.168.0.132 --watch --no-info",
     "dev": "webpack --progress --colors --watch"
   },
   "author": "",
